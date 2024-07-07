@@ -4,24 +4,25 @@ import { Button } from './Button';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import useDebonceValue from '../hooks/useDebonceValue';
 
 const Users = () => {
 
     const [users, setUsers] = useState([]);
     const [filter, setFilter] = useState('');
+    const debounceFilter = useDebonceValue(filter, 500);
     const navigate = useNavigate();
 
     useEffect(() => {
-        axios.get('http://localhost:3000/api/v1/user/bulk?filter=' + filter)
+        axios.get('http://localhost:3000/api/v1/user/bulk?filter=' + debounceFilter)
             .then((response) => {
                 setUsers(response.data.user);
             })
-    }, [filter])
+    }, [debounceFilter])
 
     return (
         <div className="mt-5 px-6">
             <div>
-
                 <div className="text-md font-medium">Users</div>
                 <InputBox onChange={(e) => setFilter(e.target.value)} placeholder={"Search users..."} className={"rounded-md w-full"} />
 
